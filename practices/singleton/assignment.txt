@@ -1,0 +1,190 @@
+# ============================================================
+# BÀI TẬP THỰC HÀNH: SINGLETON PATTERN
+# File: practices/singleton/p1.py
+# ============================================================
+#
+# Bối cảnh
+# - Dựa trên tài liệu `design-patterns-knowledge/01-singleton.md`.
+# - Mục tiêu là luyện cách triển khai Singleton trong Python bằng `__new__`.
+# - Bài tập cũng giúp phân biệt:
+#   + "chỉ có một instance duy nhất"
+#   + với "nhiều biến cùng trỏ đến cùng một object"
+#
+# ------------------------------------------------------------
+# 1. Mục tiêu bài tập
+# ------------------------------------------------------------
+# Hãy xây dựng một class `AppConfig` theo Singleton Pattern để quản lý
+# cấu hình dùng chung cho toàn bộ ứng dụng.
+#
+# Ý tưởng chính:
+# - Dù gọi `AppConfig()` ở nhiều nơi, hệ thống vẫn chỉ tạo đúng 1 object.
+# - Mọi thay đổi cấu hình từ một biến tham chiếu phải được nhìn thấy từ
+#   các biến tham chiếu khác.
+#
+# ------------------------------------------------------------
+# 2. Yêu cầu triển khai
+# ------------------------------------------------------------
+# Hãy tự viết class `AppConfig` với các yêu cầu sau:
+#
+# 1. Class phải đảm bảo chỉ có duy nhất một instance.
+# 2. Dùng `__new__` để kiểm soát việc tạo instance.
+# 3. Class cần có nơi lưu dữ liệu cấu hình, ví dụ: `settings`.
+# 4. Cần hỗ trợ các hành vi sau:
+#    - `set(key, value)`: lưu hoặc cập nhật cấu hình.
+#    - `get(key)`: lấy giá trị theo key, nếu không có thì trả về `None`.
+#    - `all()`: trả về toàn bộ cấu hình hiện tại.
+# 5. Không để mỗi lần gọi `AppConfig()` làm reset dữ liệu cũ.
+#
+# Gợi ý:
+# - Dùng class attribute `_instance = None`.
+# - Chỉ khởi tạo `settings` đúng một lần khi instance đầu tiên được tạo.
+#
+# ------------------------------------------------------------
+# 3. Nhiệm vụ chính
+# ------------------------------------------------------------
+# Viết code để hoàn thành các bước sau:
+#
+# Bước 1:
+# - Tạo class `AppConfig`.
+#
+# Bước 2:
+# - Tạo hai biến:
+#   `config_a = AppConfig()`
+#   `config_b = AppConfig()`
+#
+# Bước 3:
+# - Gọi:
+#   `config_a.set("env", "production")`
+#   `config_a.set("debug", False)`
+#
+# Bước 4:
+# - In hoặc kiểm tra các kết quả sau:
+#   + `config_b.get("env")` phải là `"production"`
+#   + `config_b.get("debug")` phải là `False`
+#   + `config_a is config_b` phải là `True`
+#
+# Bước 5:
+# - Cập nhật từ object còn lại:
+#   `config_b.set("region", "ap-southeast-1")`
+# - Sau đó kiểm tra:
+#   `config_a.get("region")` phải là `"ap-southeast-1"`
+#
+# ------------------------------------------------------------
+# 4. Tập dữ liệu test
+# ------------------------------------------------------------
+# Dùng bộ dữ liệu sau để kiểm tra bài làm:
+#
+# TEST_SETTINGS = [
+#     ("env", "production"),
+#     ("debug", False),
+#     ("region", "ap-southeast-1"),
+#     ("version", "1.0.0"),
+# ]
+#
+# Gợi ý cách dùng:
+# - Lần lượt gọi `set(key, value)` cho từng phần tử.
+# - Sau đó tạo thêm một biến mới:
+#   `config_c = AppConfig()`
+# - Kiểm tra `config_c` vẫn đọc được toàn bộ dữ liệu đã set trước đó.
+#
+# ------------------------------------------------------------
+# 5. Kỳ vọng đầu ra
+# ------------------------------------------------------------
+# Nếu làm đúng, về mặt logic kết quả nên tương đương:
+#
+# production
+# False
+# True
+# ap-southeast-1
+#
+# Và:
+# - `config_a.all()`
+# - `config_b.all()`
+# - `config_c.all()`
+#
+# đều phải cho cùng một nội dung dữ liệu.
+#
+# ------------------------------------------------------------
+# 6. Define of Done
+# ------------------------------------------------------------
+# Bài được xem là hoàn thành khi thỏa tất cả điều kiện sau:
+#
+# [ ] Có class `AppConfig`
+# [ ] Có Singleton logic bằng `__new__`
+# [ ] Gọi `AppConfig()` nhiều lần nhưng chỉ dùng chung 1 instance
+# [ ] Dữ liệu cấu hình không bị reset khi tạo thêm biến mới
+# [ ] Có các method `set`, `get`, `all`
+# [ ] Các test kiểm tra bằng `is` cho kết quả `True`
+# [ ] Dữ liệu set từ `config_a` đọc được từ `config_b` và ngược lại
+#
+# ------------------------------------------------------------
+# 7. Câu hỏi vận dụng
+# ------------------------------------------------------------
+# Sau khi làm xong bài cơ bản, hãy trả lời hoặc thử code thêm:
+#
+# 1. Nếu bỏ Singleton, điều gì xảy ra khi tạo:
+#    `config_a = AppConfig()` và `config_b = AppConfig()`?
+#
+# 2. Vì sao Singleton giúp phù hợp với bài toán cấu hình dùng chung?
+#
+# 3. Nếu trong unit test, test case trước set dữ liệu vào Singleton,
+#    test case sau có thể bị ảnh hưởng như thế nào?
+#
+# 4. Trong Python, khi nào nên cân nhắc dùng module-level object thay vì
+#    tự viết Singleton class?
+#
+# ------------------------------------------------------------
+# 8. Thử thách nâng cao
+# ------------------------------------------------------------
+# Nâng cấp bài làm với một trong các hướng sau:
+#
+# Mức 1:
+# - Thêm method `reset()` để xóa toàn bộ cấu hình.
+# - Dùng method này để phục vụ việc test dễ hơn.
+#
+# Mức 2:
+# - Chặn việc khởi tạo lại dữ liệu trong `__init__` nếu `__init__`
+#   được gọi nhiều lần.
+#
+# Mức 3:
+# - Viết thêm class khác, ví dụ `Logger`, cũng theo Singleton Pattern.
+# - So sánh khi nào nên dùng `AppConfig` và khi nào không nên lạm dụng.
+#
+# ------------------------------------------------------------
+# 9. Khung code gợi ý
+# ------------------------------------------------------------
+# Bạn có thể bắt đầu từ khung sau và tự hoàn thiện:
+#
+# class AppConfig:
+#     _instance = None
+#
+#     def __new__(cls):
+#         # TODO: chỉ tạo instance một lần
+#         pass
+#
+#     def set(self, key, value):
+#         # TODO
+#         pass
+#
+#     def get(self, key):
+#         # TODO
+#         pass
+#
+#     def all(self):
+#         # TODO
+#         pass
+#
+#
+# config_a = AppConfig()
+# config_b = AppConfig()
+#
+# # TODO: viết phần kiểm tra ở đây
+#
+# ------------------------------------------------------------
+# 10. Lưu ý học tập
+# ------------------------------------------------------------
+# - Singleton dễ hiểu nhưng cũng rất dễ bị lạm dụng.
+# - Chỉ nên dùng khi thật sự cần một trạng thái dùng chung duy nhất.
+# - Với hệ thống lớn, nên cân nhắc Dependency Injection để dependency
+#   rõ ràng và dễ test hơn.
+# ============================================================
